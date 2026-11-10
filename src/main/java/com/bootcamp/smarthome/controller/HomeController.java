@@ -3,6 +3,8 @@ package com.bootcamp.smarthome.controller;
 import com.bootcamp.smarthome.device.Device;
 import exception.DeviceOfflineExcpetion;
 import exception.HomeAutomationException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Central hub that manages all registered smart devices.
