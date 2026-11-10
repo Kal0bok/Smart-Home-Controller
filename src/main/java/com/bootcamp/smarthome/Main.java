@@ -5,6 +5,7 @@ import com.bootcamp.smarthome.device.Device;
 import com.bootcamp.smarthome.device.SmartLight;
 import com.bootcamp.smarthome.device.SmartLock;
 import com.bootcamp.smarthome.device.SmartThermostat;
+import exception.InvalidValueException;
 
 /**
  * Entry point for the Smart Home Controller demo.
@@ -40,11 +41,18 @@ public class Main {
             System.out.println("\n=== Scenario 2: Set brightness ===");
             controller.sendCommand("LIGHT_01 SET_BRIGHTNESS 80");
 
+
             System.out.println("\n=== Scenario 3: Invalid temperature ===");
             // This test calls setTemperature() directly to isolate temperature validation.
             Device found = controller.findDevice("THERMO_01");
             SmartThermostat mainThermostat = (SmartThermostat) found;
-            mainThermostat.setTemperature(99.0);
+            try{
+                mainThermostat.setTemperature(99.0);
+            }catch(InvalidValueException e){
+                System.out.println("Caught expected validation error: " + e.getMessage());
+            }
+
+
 
             System.out.println("\n=== Scenario 4: Offline device ===");
             // LIGHT_03 is offline — command should be skipped with a warning

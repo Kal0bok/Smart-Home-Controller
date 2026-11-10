@@ -36,7 +36,7 @@ public class SmartThermostat extends Device {
     }
 
     @Override
-    public void executeCommand(String command) {
+    public void executeCommand(String command) throws InvalidValueException {
         if (command.startsWith("SET_TEMP")) {
             String[] parts = command.split(" ");
             double temp = (parts.length > 1) ? Double.parseDouble(parts[1]) : 20.0;
