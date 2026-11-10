@@ -14,6 +14,7 @@ import org.slf4j.LoggerFactory;
  */
 public class HomeController {
 
+    private static final Logger logger = LoggerFactory.getLogger(HomeController.class);
     public static final int MAX_DEVICES = 8;
 
     private final Device[] devices = new Device[MAX_DEVICES];
