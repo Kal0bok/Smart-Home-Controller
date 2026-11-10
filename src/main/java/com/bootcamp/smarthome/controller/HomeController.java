@@ -1,6 +1,8 @@
 package com.bootcamp.smarthome.controller;
 
 import com.bootcamp.smarthome.device.Device;
+import exception.DeviceOfflineExcpetion;
+import exception.HomeAutomationException;
 
 /**
  * Central hub that manages all registered smart devices.
@@ -47,12 +49,12 @@ public class HomeController {
      * Returns {@code null} when no matching device is found.
      */
     public Device findDevice(String deviceId) {
-        for (int i = 0; i <= deviceCount; i++) {
+        for (int i = 0; i < deviceCount; i++) {
             if (devices[i] != null && devices[i].getDeviceId().equals(deviceId)) {
                 return devices[i];
             }
         }
-        return null;
+        throw new DeviceNotFoundException("Device not found: " + deviceId);
     }
 
     // -------------------------------------------------------------------------
@@ -68,23 +70,24 @@ public class HomeController {
      *
      * @param fullCommand the full command string
      */
-    public void sendCommand(String fullCommand) {
+    public void sendCommand(String fullCommand) throws HomeAutomationException {
         String deviceId = CommandParser.extractDeviceId(fullCommand);
         String command  = CommandParser.extractCommand(fullCommand);
 
-        Device device = findDevice(deviceId);
+        Device device = null;
+        try {
+            device = findDevice(deviceId);
 
-        if (device == null) {
-            System.out.println("Device not found: " + deviceId);
-            return;
+            if (!device.isOnline()) {
+                throw new DeviceOfflineExcpetion("Device '" + deviceId + "' is offline");
+            }
+
+            device.executeCommand(command);
+        }catch(HomeAutomationException e){
+            throw new HomeAutomationException("Command '" + fullCommand + "' failed for device '" + deviceId +"'", e);
+        }finally{
+            System.out.println("Command processing ended for device " + deviceId);
         }
-
-        if (!device.isOnline()) {
-            System.out.println("WARNING: Device '" + deviceId + "' is offline — command skipped.");
-            return;
-        }
-
-        device.executeCommand(command);
     }
 
     // -------------------------------------------------------------------------
