@@ -1,6 +1,8 @@
 package com.bootcamp.smarthome.device;
 
 import exception.InvalidValueException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * A PIN-protected smart door lock.
