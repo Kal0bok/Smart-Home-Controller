@@ -75,23 +75,29 @@ public class HomeController {
      */
     public void sendCommand(String fullCommand) throws HomeAutomationException {
         String deviceId = CommandParser.extractDeviceId(fullCommand);
-        String command  = CommandParser.extractCommand(fullCommand);
+        String command = CommandParser.extractCommand(fullCommand);
+
+        logger.debug("Command received for device '{}': {}", deviceId, fullCommand);
 
         Device device = null;
         try {
             device = findDevice(deviceId);
 
             if (!device.isOnline()) {
-                throw new DeviceOfflineExcpetion("Device '" + deviceId + "' is offline");
+                logger.warn("Device '{}' is offline — command skipped.", deviceId);
+                throw new DeviceOfflineException("Device '" + deviceId + "' is offline");
             }
 
             device.executeCommand(command);
-        }catch(HomeAutomationException e){
-            throw new HomeAutomationException("Command '" + fullCommand + "' failed for device '" + deviceId +"'", e);
-        }finally{
+            logger.info("Command executed successfully for device '{}'", deviceId);
+        } catch (HomeAutomationException e) {
+            logger.error("Exception caught during command processing for device '{}'", deviceId, e);
+            throw new HomeAutomationException("Command '" + fullCommand + "' failed for device '" + deviceId + "'", e);
+        } finally {
             System.out.println("Command processing ended for device " + deviceId);
         }
     }
+
 
     // -------------------------------------------------------------------------
     // Utility
