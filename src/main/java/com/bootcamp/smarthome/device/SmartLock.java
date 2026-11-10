@@ -12,6 +12,8 @@ import org.slf4j.LoggerFactory;
  */
 public class SmartLock extends Device {
 
+    private static final Logger logger = LoggerFactory.getLogger(SmartLock.class);
+
     private boolean isLocked;
     private final String storedPin;
 
