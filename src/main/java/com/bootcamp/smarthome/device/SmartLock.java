@@ -1,6 +1,7 @@
 package com.bootcamp.smarthome.device;
 
-import exception.InvalidCommandException;
+import com.bootcamp.smarthome.exception.InvalidCommandException;
+import com.bootcamp.smarthome.exception.InvalidValueException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

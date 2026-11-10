@@ -1,8 +1,10 @@
 package com.bootcamp.smarthome.controller;
 
 import com.bootcamp.smarthome.device.Device;
-import exception.DeviceOfflineExcpetion;
-import exception.HomeAutomationException;
+import com.bootcamp.smarthome.exception.DeviceNotFoundException;
+import com.bootcamp.smarthome.exception.DeviceOfflineException;
+import com.bootcamp.smarthome.exception.HomeAutomationException;
+import com.bootcamp.smarthome.exception.InvalidValueException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -35,7 +37,7 @@ public class HomeController {
         if (deviceCount >= MAX_DEVICES) {
             throw new IllegalStateException(
                     "Cannot add device '" + device.getDeviceId() +
-                    "': controller is at maximum capacity (" + MAX_DEVICES + ").");
+                            "': controller is at maximum capacity (" + MAX_DEVICES + ").");
         }
         devices[deviceCount] = device;
         deviceCount++;
@@ -49,7 +51,7 @@ public class HomeController {
     /**
      * Finds a registered device by its ID.
      *
-     * Returns {@code null} when no matching device is found.
+     * Throws DeviceNotFoundException when no matching device is found.
      */
     public Device findDevice(String deviceId) {
         for (int i = 0; i < deviceCount; i++) {
