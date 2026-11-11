@@ -1,8 +1,12 @@
 package com.bootcamp.smarthome.controller;
 
 import com.bootcamp.smarthome.device.Device;
-import exception.DeviceOfflineExcpetion;
-import exception.HomeAutomationException;
+import com.bootcamp.smarthome.exception.DeviceNotFoundException;
+import com.bootcamp.smarthome.exception.DeviceOfflineException;
+import com.bootcamp.smarthome.exception.HomeAutomationException;
+import com.bootcamp.smarthome.exception.InvalidValueException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Central hub that manages all registered smart devices.
@@ -12,6 +16,7 @@ import exception.HomeAutomationException;
  */
 public class HomeController {
 
+    private static final Logger logger = LoggerFactory.getLogger(HomeController.class);
     public static final int MAX_DEVICES = 8;
 
     private final Device[] devices = new Device[MAX_DEVICES];
@@ -32,7 +37,7 @@ public class HomeController {
         if (deviceCount >= MAX_DEVICES) {
             throw new IllegalStateException(
                     "Cannot add device '" + device.getDeviceId() +
-                    "': controller is at maximum capacity (" + MAX_DEVICES + ").");
+                            "': controller is at maximum capacity (" + MAX_DEVICES + ").");
         }
         devices[deviceCount] = device;
         deviceCount++;
@@ -46,7 +51,7 @@ public class HomeController {
     /**
      * Finds a registered device by its ID.
      *
-     * Returns {@code null} when no matching device is found.
+     * Throws DeviceNotFoundException when no matching device is found.
      */
     public Device findDevice(String deviceId) {
         for (int i = 0; i < deviceCount; i++) {
@@ -72,23 +77,29 @@ public class HomeController {
      */
     public void sendCommand(String fullCommand) throws HomeAutomationException {
         String deviceId = CommandParser.extractDeviceId(fullCommand);
-        String command  = CommandParser.extractCommand(fullCommand);
+        String command = CommandParser.extractCommand(fullCommand);
+
+        logger.debug("Command received for device '{}': {}", deviceId, fullCommand);
 
         Device device = null;
         try {
             device = findDevice(deviceId);
 
             if (!device.isOnline()) {
-                throw new DeviceOfflineExcpetion("Device '" + deviceId + "' is offline");
+                logger.warn("Device '{}' is offline — command skipped.", deviceId);
+                throw new DeviceOfflineException("Device '" + deviceId + "' is offline");
             }
 
             device.executeCommand(command);
-        }catch(HomeAutomationException e){
-            throw new HomeAutomationException("Command '" + fullCommand + "' failed for device '" + deviceId +"'", e);
-        }finally{
+            logger.info("Command executed successfully for device '{}'", deviceId);
+        } catch (HomeAutomationException e) {
+            logger.error("Exception caught during command processing for device '{}'", deviceId, e);
+            throw new HomeAutomationException("Command '" + fullCommand + "' failed for device '" + deviceId + "'", e);
+        } finally {
             System.out.println("Command processing ended for device " + deviceId);
         }
     }
+
 
     // -------------------------------------------------------------------------
     // Utility

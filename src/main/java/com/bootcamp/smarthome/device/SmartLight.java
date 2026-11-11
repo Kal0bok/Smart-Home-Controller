@@ -1,6 +1,6 @@
 package com.bootcamp.smarthome.device;
 
-import exception.InvalidValueException;
+import com.bootcamp.smarthome.exception.InvalidValueException;
 
 /**
  * A dimmable smart light bulb.
@@ -36,7 +36,7 @@ public class SmartLight extends Device {
     }
 
     @Override
-    public void executeCommand(String command) {
+    public void executeCommand(String command) throws InvalidValueException {
         if (command.startsWith("SET_BRIGHTNESS")) {
             String[] parts = command.split(" ");
             int level = (parts.length > 1) ? Integer.parseInt(parts[1]) : 50;

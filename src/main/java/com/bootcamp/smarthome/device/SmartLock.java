@@ -1,6 +1,9 @@
 package com.bootcamp.smarthome.device;
 
-import exception.InvalidValueException;
+import com.bootcamp.smarthome.exception.InvalidCommandException;
+import com.bootcamp.smarthome.exception.InvalidValueException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * A PIN-protected smart door lock.
@@ -9,6 +12,8 @@ import exception.InvalidValueException;
  * Every failed unlock attempt is treated as a security event.
  */
 public class SmartLock extends Device {
+
+    private static final Logger logger = LoggerFactory.getLogger(SmartLock.class);
 
     private boolean isLocked;
     private final String storedPin;
@@ -26,14 +31,15 @@ public class SmartLock extends Device {
     /**
      * Validates the supplied PIN against the stored PIN.
      */
-    public void validatePin(String pin) throws InvalidValueException {
+    public void validatePin(String pin) throws InvalidCommandException {
+        // Check if PIN is null or does not match the stored PIN
         if (pin == null || !pin.equals(storedPin)) {
-            System.out.println("SECURITY ALERT: Incorrect PIN enterned for " + getName() + ".");
-                throw new InvalidValueException("Incorrect or null PIN entered for " + getName());
-            {
-            isLocked = false;
-            System.out.println(getName() + " unlocked successfully.");
+            logger.error("SECURITY ALERT: Incorrect PIN entered for {}.", getName());
+            throw new InvalidCommandException("Incorrect or null PIN entered for " + getName());
         }
+
+        isLocked = false;
+        System.out.println(getName() + " unlocked successfully.");
     }
 
     public void lock() {
@@ -46,7 +52,12 @@ public class SmartLock extends Device {
         if (command.startsWith("UNLOCK")) {
             String[] parts = command.split(" ");
             String pin = (parts.length > 1) ? parts[1] : null;
-            validatePin(pin);
+            try {
+                validatePin(pin);
+            } catch (InvalidCommandException e) {
+                // Catch the exception here since Device's executeCommand signature doesn't throw checked exceptions
+                logger.error("Failed to execute command on {}: {}", getName(), e.getMessage());
+            }
         } else if (command.equals("LOCK")) {
             lock();
         } else if (command.equals("TURN_ON")) {
