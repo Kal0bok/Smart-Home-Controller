@@ -1,0 +1,8 @@
+2026-11-11 10:07:09 DEBUG c.b.s.controller.HomeController - Command received for device 'LIGHT_01': LIGHT_01 TURN_ON
+2026-11-11 10:07:09 INFO  c.b.s.controller.HomeController - Command executed successfully for device 'LIGHT_01'
+2026-11-11 10:07:09 DEBUG c.b.s.controller.HomeController - Command received for device 'LIGHT_02': LIGHT_02 TURN_ON
+2026-11-11 10:07:09 INFO  c.b.s.controller.HomeController - Command executed successfully for device 'LIGHT_02'
+2026-11-11 10:07:09 DEBUG c.b.s.controller.HomeController - Command received for device 'THERMO_01': THERMO_01 SET_TEMP 22.5
+2026-11-11 10:07:09 INFO  c.b.s.controller.HomeController - Command executed successfully for device 'THERMO_01'
+2026-11-11 10:07:09 DEBUG c.b.s.controller.HomeController - Command received for device 'LIGHT_01': LIGHT_01 SET_BRIGHTNESS 80
+2026-11-11 10:07:09 INFO  c.b.s.controller.HomeController - Command executed successfully for device 'LIGHT_01'

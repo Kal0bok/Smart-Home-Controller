@@ -50,7 +50,6 @@ public class Main {
 
 
             System.out.println("\n=== Scenario 4: Offline device ===");
-            // LIGHT_03 is offline — command should be skipped with a warning
             controller.sendCommand("LIGHT_03 TURN_ON");
 
             System.out.println("\n=== Scenario 5: Unlock with correct PIN ===");
