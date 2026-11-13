@@ -92,6 +92,16 @@ public class HomeController {
 
             device.executeCommand(command);
             logger.info("Command executed successfully for device '{}'", deviceId);
+
+        } catch (DeviceOfflineException e) {
+            logger.error("Device offline error for '{}': {}", deviceId, e.getMessage());
+            throw new HomeAutomationException("Command '" + fullCommand + "' failed for device '" + deviceId + "'", e);
+        } catch (InvalidValueException e) {
+            logger.error("Invalid value error for '{}': {}", deviceId, e.getMessage());
+            throw new HomeAutomationException("Command '" + fullCommand + "' failed for device '" + deviceId + "'", e);
+        } catch (DeviceNotFoundException e) {
+            logger.error("Device not found error: {}", e.getMessage());
+            throw new HomeAutomationException("Command '" + fullCommand + "' failed for device '" + deviceId + "'", e);
         } catch (HomeAutomationException e) {
             logger.error("Exception caught during command processing for device '{}'", deviceId, e);
             throw new HomeAutomationException("Command '" + fullCommand + "' failed for device '" + deviceId + "'", e);
@@ -99,6 +109,7 @@ public class HomeController {
             System.out.println("Command processing ended for device " + deviceId);
         }
     }
+
 
 
     // -------------------------------------------------------------------------
