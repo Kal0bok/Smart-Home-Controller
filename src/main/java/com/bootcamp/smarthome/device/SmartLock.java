@@ -48,16 +48,12 @@ public class SmartLock extends Device {
     }
 
     @Override
-    public void executeCommand(String command) {
+    public void executeCommand(String command) throws InvalidCommandException {
         if (command.startsWith("UNLOCK")) {
             String[] parts = command.split(" ");
             String pin = (parts.length > 1) ? parts[1] : null;
-            try {
-                validatePin(pin);
-            } catch (InvalidCommandException e) {
-                // Catch the exception here since Device's executeCommand signature doesn't throw checked exceptions
-                logger.error("Failed to execute command on {}: {}", getName(), e.getMessage());
-            }
+            // Deleted local try-catch, now error go to HomeController
+            validatePin(pin);
         } else if (command.equals("LOCK")) {
             lock();
         } else if (command.equals("TURN_ON")) {
